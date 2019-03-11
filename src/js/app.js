@@ -1,55 +1,45 @@
 import React, { PureComponent } from 'react'
-import { db } from './firebase'
-import ToolCenter from './toolcenter'
-import CardGroup from './cardgroup'
-import AddBoard from './addboard'
+import { HashRouter, Route } from 'react-router-dom'
+import * as ROUTES from './constants/route'
+import { AuthContext } from './components/Auth'
+import LandingPage from './landingpage'
+import Signup from './signup'
+import Login from './login'
+import Home from './home'
+import FBase from './firebase'
 
 export default class App extends PureComponent {
     state = {
-        cardData: {},
-        isAddBoardOpen: false,
-        isDeleteOpen: false,
+        authUser: null
     }
 
     componentDidMount() {
-        db.ref('mom/food').on('value', snapshot => {
-            this.setState(() => ({
-                cardData: snapshot.val()
-            }))
+        FBase.auth.onAuthStateChanged(authUser => {
+            console.log(authUser)
+            authUser ?
+                this.setState({ authUser }) :
+                this.setState({ authUser: null })
         })
     }
 
-    toggleAddBoard = () => {
-        const { isAddBoardOpen } = this.state
-        this.setState(() => ({
-            isAddBoardOpen: !isAddBoardOpen
-        }))
-    }
-
-    toggleDelete = () => {
-        const { isDeleteOpen } = this.state
-        this.setState({
-            isDeleteOpen: !isDeleteOpen
-        })
+    componentWillUnmount() {
+        console.log('Unmount app')
     }
 
     render() {
-        const { cardData, isAddBoardOpen, isDeleteOpen } = this.state
-
+        console.log('render app')
+        const { authUser } = this.state
         return (
-            <React.Fragment>
-                <CardGroup
-                    cardData={cardData}
-                    isDeleteOpen={isDeleteOpen}
-                    toggleDelete={this.toggleDelete} />
-                <ToolCenter
-                    toggleAddBoard={this.toggleAddBoard}
-                    toggleDelete={this.toggleDelete}
-                    toggleCheckDelete={this.toggleCheckDelete} />
-                <AddBoard
-                    visible={isAddBoardOpen}
-                    toggleAddBoard={this.toggleAddBoard} />
-            </React.Fragment>
+            <AuthContext.Provider value={authUser}>
+                <HashRouter>
+                    <React.Fragment>
+                        <Route exact path={ROUTES.LANDING} component={LandingPage} />
+                        <Route path={ROUTES.HOME} component={Home} />
+                        <Route path={ROUTES.SIGN_IN} component={Login} />
+                        <Route path={ROUTES.SIGN_UP} component={Signup} />
+                    </React.Fragment>
+                </HashRouter>
+            </AuthContext.Provider>
         )
     }
 }

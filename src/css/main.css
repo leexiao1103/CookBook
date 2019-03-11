@@ -6,18 +6,18 @@ body, .ui, .content, .item {
 }
 
 .ui.label {
-	margin: .14285714em
+  margin: .14285714em
 }
 
 #root {
-	padding: 50px 50px
+  padding: 50px 50px
 }
 
 #tool_center, #check_delete {
   position: fixed;
   display: inline-block;
   bottom: 25px;
-  right: 25px;  
+  right: 25px;
 }
 
 #check_delete {
@@ -31,8 +31,5 @@ body, .ui, .content, .item {
 #tool_center button, #check_delete button {
   margin: 10px 0px 0px 0px;
   transition: bottom .6s .25s;
-  box-shadow: 0 14px 59px -7px rgba(0,0,0,0.55);
+  box-shadow: 0 14px 59px -7px rgba(0, 0, 0, 0.55);
 }
-
-
-

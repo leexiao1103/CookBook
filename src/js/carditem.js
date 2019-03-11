@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { defalutimg } from './firebase'
+import FBase from './firebase'
 import { Dimmer, Card, Image, Label, Icon } from 'semantic-ui-react'
 
 export default class CardItem extends Component {
@@ -23,7 +23,7 @@ export default class CardItem extends Component {
 
     return (
       <Dimmer.Dimmable link as={Card} dimmed={isDeleteOpen} onClick={!isDeleteOpen ? () => toggleCardDetail(id) : this.select}>
-        <Image src={defalutimg} />
+        <Image src={FBase.getDefaultImg} />
         <Card.Content>
           <Card.Header>
             <span className="right floated"><Label color="orange" basic>{value.Spec}</Label></span>

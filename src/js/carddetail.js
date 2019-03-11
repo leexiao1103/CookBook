@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { defalutimg } from './firebase'
+import FBase from './firebase'
 import { Tab, Modal, Image, Icon } from 'semantic-ui-react'
 import StepItem from './stepitem'
 import MaterialItem from './materialitem'
@@ -19,7 +19,7 @@ export default class CardDetail extends Component {
             <Modal open={this.props.visible} closeIcon={closeicon}>
                 <Modal.Header>{this.props.data['Name'] || ''}</Modal.Header>
                 <Modal.Content scrolling>
-                    <Image src={defalutimg} size='large' centered rounded />
+                    <Image src={FBase.getDefaultImg} size='large' centered rounded />
                     <Tab menu={{ secondary: true, pointing: true, fluid: true, widths: 3 }} panes={this.panes} />
                 </Modal.Content>
             </Modal>

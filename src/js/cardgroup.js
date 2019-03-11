@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { db } from './firebase'
+import FBase from './firebase'
 import { Card } from 'semantic-ui-react'
 import CardItem from './carditem'
 import CardDetail from './carddetail'
@@ -39,7 +39,7 @@ export default class CardGroup extends PureComponent {
 	deleteData = (target) => {
 		target.map((val) => {
 			return(
-				db.ref(`mom/food/${val}`).remove()
+				FBase.user(`mom/food/${val}`).remove()
 			)			
 		})		
 	}

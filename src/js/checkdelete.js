@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Button, Icon, Transition, Divider } from 'semantic-ui-react'
+import { Button, Icon, Transition } from 'semantic-ui-react'
 
 export default class checkdelete extends PureComponent {
     render() {

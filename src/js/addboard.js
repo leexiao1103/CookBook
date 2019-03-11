@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Button, Icon, Modal, Form, Header, Label, Item, Transition } from 'semantic-ui-react'
-import { PushToDB } from './firebase'
+import FBase from './firebase'
 
 export default class AddBoard extends PureComponent {
     state = {
@@ -81,7 +81,7 @@ export default class AddBoard extends PureComponent {
             Materials: materials,
             Steps: steps,
         }
-        PushToDB('mom/food/', data)
+        FBase.pushToDB('mom/food/', data)
         this.initState()
         toggleAddBoard()
     }

@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/database'
 import 'firebase/storage'
+import 'firebase/auth'
 
 //正式站
 const proconfig = {
@@ -21,42 +22,70 @@ const devconfig = {
     messagingSenderId: "1003067516877"
 }
 const config = devconfig//process.env.NODE_ENV === 'production' ? proconfig : devconfig
-firebase.initializeApp(config)
 
-const db = firebase.database()
-
-//取得預設圖片
-let defalutimg = ''
-const storage = firebase.storage()
-storage.ref().child('image.png').getDownloadURL().then(function (url) {
-    defalutimg = url;
-}).catch(function (error) {
-    // Handle any errors
-    switch (error.code) {
-        case 'storage/object_not_found':
-            console.log(`File doesn't exist`)
-            break;
-
-        case 'storage/unauthorized':
-            console.log(`User doesn't have permission to access the object`);
-            break;
-
-        case 'storage/canceled':
-            console.log(`User canceled the upload`);
-            break;
-
-        case 'storage/unknown':
-            console.log(`Unknown error occurred, inspect the server response`);
-            break;
+class Firebase {
+    constructor() {
+        console.log('constructor firebase')
+        firebase.initializeApp(config)
+        this.auth = firebase.auth()
+        this.db = firebase.database()
+        this.storage = firebase.storage()
     }
-})
 
-//DB操作
-const PushToDB = (url, data) => {
-    db.ref(url).push(data)
+    // *** Auth API ***
+    doCreateUserWithEmailAndPassword = (email, password) =>
+        this.auth.createUserWithEmailAndPassword(email, password)
+
+    doSignInWithEmailAndPassword = (email, password) =>
+        this.auth.signInWithEmailAndPassword(email, password)
+
+    doSignOut = () => this.auth.signOut()
+
+    doPasswordReset = email => this.auth.sendPasswordResetEmail(email)
+
+    doPasswordUpdate = password => this.auth.currentUser.updatePassword(password)
+
+    getCurrentUser = () => this.auth.currentUser
+
+    // *** User API ***
+    setUser = (uid, username) => {
+        this.user = { uid, username }
+    }
+
+    user = uid => this.db.ref(`users/${uid}`)
+
+    users = () => this.db.ref('users')
+
+    pushToDB = (url, data) => this.db.ref(url).push(data)
+
+    getDefaultImg = () => {
+        this.storage.ref().child('image.png').getDownloadURL()
+            .then(url => {
+                return url
+            }).catch(function (error) {
+                // Handle any errors
+                switch (error.code) {
+                    case 'storage/object_not_found':
+                        console.log(`File doesn't exist`)
+                        break;
+
+                    case 'storage/unauthorized':
+                        console.log(`User doesn't have permission to access the object`);
+                        break;
+
+                    case 'storage/canceled':
+                        console.log(`User canceled the upload`);
+                        break;
+
+                    case 'storage/unknown':
+                        console.log(`Unknown error occurred, inspect the server response`);
+                        break;
+                }
+                return ''
+            })
+    }
 }
 
-export {
-    db, storage, defalutimg, PushToDB
-}
+export default new Firebase()
+
 
