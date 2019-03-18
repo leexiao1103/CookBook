@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import FBase from './firebase'
+import FBase from './components/firebase'
 import { Dimmer, Card, Image, Label, Icon } from 'semantic-ui-react'
 
 export default class CardItem extends Component {

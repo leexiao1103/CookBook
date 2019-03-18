@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react'
-import FBase from './firebase'
 import * as ROUTES from './constants/route'
-import { Button, Form, Segment, Grid } from 'semantic-ui-react'
+import { Button, Form, Segment, Grid, Loader } from 'semantic-ui-react'
+import { withAuthorization } from './components/auth'
+
 
 const INIT_STATE = {
     email: '',
@@ -9,14 +10,15 @@ const INIT_STATE = {
     error: null
 }
 
-export default class Login extends PureComponent {
+class Login extends PureComponent {
     state = INIT_STATE
 
     componentDidMount() {
-        const user = FBase.getCurrentUser()
+        const user = this.props.firebase.getCurrentUser()
         if (user)
-            this.props.history.push(ROUTES.HOME)
+            this.props.history.push(ROUTES.LANDING)
     }
+
 
     onChange = event => {
         this.setState({
@@ -25,11 +27,11 @@ export default class Login extends PureComponent {
     }
 
     onSubmit = event => {
-        console.log('submit')
         event.preventDefault()
         const { email, password } = this.state
+        const { firebase } = this.props
 
-        FBase.doSignInWithEmailAndPassword(email, password)
+        firebase.doSignInWithEmailAndPassword(email, password)
             .then(authUser => {
                 this.setState({ ...INIT_STATE })
                 this.props.history.push(ROUTES.HOME)
@@ -40,54 +42,64 @@ export default class Login extends PureComponent {
     }
 
     render() {
-        let { email, password, error } = this.state
+        const { email, password, error } = this.state
+        const { authUser } = this.props.auth
+        console.log('render login')
+
         return (
-            <div>
-                <style>{`
-                    body > div,
-                    body > div > div,
-                    body > div > div > div {
-                    height: 100%;
-                    }
-                `}
-                </style>
-                <Grid textAlign="center" verticalAlign="middle" style={{ height: '100%' }}>
-                    <Grid.Column style={{ maxWidth: 450 }}>
-                        <Form size='large' onSubmit={this.onSubmit}>
-                            <Segment>
-                                <Form.Input
-                                    fluid
-                                    icon='user'
-                                    iconPosition='left'
-                                    name="email"
-                                    value={email}
-                                    onChange={this.onChange}
-                                    placeholder='E-mail address'
-                                />
-                                <Form.Input
-                                    fluid
-                                    type='password'
-                                    icon='lock'
-                                    iconPosition='left'
-                                    name="password"
-                                    value={password}
-                                    onChange={this.onChange}
-                                    placeholder='Password'
-                                />
-                                {error && <p style={{ color: 'red' }}>{error.message}</p>}
-                                <Button
-                                    fluid
-                                    size='large'
-                                    color='teal'
-                                    type='submit'
-                                >
-                                    Login
+            authUser ?
+                <React.Fragment>
+                    <Loader active content='已登入，為您跳轉' />
+                </React.Fragment>
+                :
+                <div>
+                    <style>{`
+                                body > #root,
+                                body > #root > div ,
+                                body > div > div > div {
+                                height: 100%;
+                                }
+                            `}
+                    </style>
+                    <Grid textAlign="center" verticalAlign="middle" style={{ height: '100%' }}>
+                        <Grid.Column style={{ maxWidth: 450 }}>
+                            <Form size='large' onSubmit={this.onSubmit}>
+                                <Segment>
+                                    <Form.Input
+                                        fluid
+                                        icon='user'
+                                        iconPosition='left'
+                                        name="email"
+                                        value={email}
+                                        onChange={this.onChange}
+                                        placeholder='E-mail'
+                                    />
+                                    <Form.Input
+                                        fluid
+                                        type='password'
+                                        icon='lock'
+                                        iconPosition='left'
+                                        name="password"
+                                        value={password}
+                                        onChange={this.onChange}
+                                        placeholder='Password'
+                                    />
+                                    {error && <p style={{ color: 'red' }}>{error.message}</p>}
+                                    <Button
+                                        fluid
+                                        size='large'
+                                        color='teal'
+                                        type='submit'
+                                    >
+                                        Login
                                 </Button>
-                            </Segment>
-                        </Form>
-                    </Grid.Column>
-                </Grid>
-            </div>
+                                </Segment>
+                            </Form>
+                        </Grid.Column>
+                    </Grid>
+                </div>
         )
     }
 }
+
+export default withAuthorization(auth => true)(Login)

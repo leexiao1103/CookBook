@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Button, Icon, Modal, Form, Header, Label, Item, Transition } from 'semantic-ui-react'
-import FBase from './firebase'
+import FBase from './components/firebase'
 
 export default class AddBoard extends PureComponent {
     state = {

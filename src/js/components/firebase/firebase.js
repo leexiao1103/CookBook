@@ -23,7 +23,7 @@ const devconfig = {
 }
 const config = devconfig//process.env.NODE_ENV === 'production' ? proconfig : devconfig
 
-class Firebase {
+export default class Firebase {
     constructor() {
         console.log('constructor firebase')
         firebase.initializeApp(config)
@@ -85,7 +85,3 @@ class Firebase {
             })
     }
 }
-
-export default new Firebase()
-
-

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
-import FBase from './firebase'
 import * as ROUTES from './constants/route'
 import { Button, Form, Segment, Grid } from 'semantic-ui-react'
+import { withAuthorization } from './components/auth'
 
 const INIT_STATE = {
     username: '',
@@ -11,7 +11,7 @@ const INIT_STATE = {
     error: null
 }
 
-export default class Signup extends PureComponent {
+class Signup extends PureComponent {
     state = INIT_STATE
 
     onChange = event => {
@@ -22,10 +22,11 @@ export default class Signup extends PureComponent {
 
     onSubmit = event => {
         event.preventDefault()
+        let { firebase } = this.props
         const { username, email, passwordOne } = this.state
-        FBase.doCreateUserWithEmailAndPassword(email, passwordOne)
+        firebase.doCreateUserWithEmailAndPassword(email, passwordOne)
             .then(authUser => {
-                return FBase.user(authUser.user.uid).set({ username, email })
+                return firebase.user(authUser.user.uid).set({ username, email })
             })
             .then(() => {
                 this.setState({ ...INIT_STATE })
@@ -114,3 +115,5 @@ export default class Signup extends PureComponent {
         )
     }
 }
+
+export default withAuthorization(auth => true)(Signup)

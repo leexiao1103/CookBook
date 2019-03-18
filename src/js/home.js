@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react'
-import * as ROUTES from './constants/route'
-import FBase from './firebase'
 import ToolCenter from './toolcenter'
 import CardGroup from './cardgroup'
 import AddBoard from './addboard'
+import { withAuthorization } from './components/auth'
+import { ToggleContext } from './components/toggle'
 
-export default class Home extends PureComponent {
+class Home extends PureComponent {
     state = {
         cardData: {},
         isAddBoardOpen: false,
@@ -13,17 +13,8 @@ export default class Home extends PureComponent {
     }
 
     componentDidMount() {
-        this.props.history.index = 0
-        const user = FBase.getCurrentUser()
-        if (user) {
-            FBase.user(`${user.uid}/food`).on('value', snapshot => {
-                this.setState(() => ({
-                    cardData: snapshot.val()
-                }))
-            })
-        } else {
-            this.props.history.push(ROUTES.SIGN_IN)
-        }
+        //this.props.history.length = 0
+
     }
 
     toggleAddBoard = () => {
@@ -42,9 +33,10 @@ export default class Home extends PureComponent {
 
     render() {
         const { cardData, isAddBoardOpen, isDeleteOpen } = this.state
-
+        console.log('render home')
+        console.log(this.props)
         return (
-            <React.Fragment>
+            <ToggleContext.Provider value={{ toggleAddBoard: this.toggleAddBoard, toggleDelete: this.toggleDelete }}>
                 <CardGroup
                     cardData={cardData}
                     isDeleteOpen={isDeleteOpen}
@@ -56,7 +48,9 @@ export default class Home extends PureComponent {
                 <AddBoard
                     visible={isAddBoardOpen}
                     toggleAddBoard={this.toggleAddBoard} />
-            </React.Fragment>
+            </ ToggleContext.Provider>
         )
     }
 }
+
+export default withAuthorization(auth => !!auth)(Home)

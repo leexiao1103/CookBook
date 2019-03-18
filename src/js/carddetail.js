@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import FBase from './firebase'
+import FBase from './components/firebase'
 import { Tab, Modal, Image, Icon } from 'semantic-ui-react'
 import StepItem from './stepitem'
 import MaterialItem from './materialitem'
