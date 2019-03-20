@@ -44,7 +44,7 @@ class Login extends PureComponent {
     render() {
         const { email, password, error } = this.state
         const { authUser } = this.props.auth
-        console.log('render login')
+        
 
         return (
             authUser ?

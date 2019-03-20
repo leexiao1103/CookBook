@@ -5,8 +5,7 @@ import CardItem from './carditem'
 import CardDetail from './carddetail'
 import CheckDelete from './checkdelete'
 import { withData } from './components/data'
-import { withToggle } from './components/toggle';
-
+import { withToggle } from './components/toggle'
 
 class CardGroup2 extends PureComponent {
 	state = {

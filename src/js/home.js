@@ -37,10 +37,7 @@ class Home extends PureComponent {
         console.log(this.props)
         return (
             <ToggleContext.Provider value={{ toggleAddBoard: this.toggleAddBoard, toggleDelete: this.toggleDelete }}>
-                <CardGroup
-                    cardData={cardData}
-                    isDeleteOpen={isDeleteOpen}
-                    toggleDelete={this.toggleDelete} />
+                <CardGroup />
                 <ToolCenter
                     toggleAddBoard={this.toggleAddBoard}
                     toggleDelete={this.toggleDelete}

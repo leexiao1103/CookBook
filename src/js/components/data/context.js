@@ -1,6 +1,7 @@
 import React from 'react'
 import { withAuthorization } from '../auth'
 import { Loader } from 'semantic-ui-react'
+import { withFirebase } from '../firebase';
 
 const DataContext = React.createContext(null)
 
@@ -8,40 +9,42 @@ const withData = dataRoute => Component => {
     class WithData extends React.Component {
         state = {
             loading: true,
+            authUser: null,
             data: {}
         }
 
         componentDidMount() {
-            const { firebase, auth } = this.props
-            firebase.user(`${auth.authUser.uid}/${dataRoute}`).on('value', snapshot => {
-                this.setState({
-                    loading: false,
-                    data: snapshot.val()
-                })
+            const { firebase } = this.props
+            this.props.firebase.auth.onAuthStateChanged(authUser => {
+                if (authUser) {
+                    this.setState({ loading: false, authUser })
+                    firebase.user(`${authUser.uid}/${dataRoute}`).on('value', snapshot => this.setState({ data: snapshot.val() || {} }))
+                } else {
+                    this.setState({ loading: false, authUser: null, data: {} })
+                }
             })
         }
 
         componentWillUnmount() {
             console.log('data unmount')
-            this.props.firebase.user(`${this.props.auth.authUser.uid}/${dataRoute}`).off()
+            const { firebase } = this.props
+            const { authUser } = this.state
+            if (authUser)
+                firebase.user(`${authUser.uid}/${dataRoute}`).off()
         }
 
         render() {
             console.log('render data')
-            const { data, loading } = this.state
-            const { authUser } = this.props.auth
+            const { loading, authUser, data } = this.state
             return (
-                <React.Fragment>
-                    {loading ?
-                        <Loader active size='small' inline='centered' />
-                        :
-                        authUser ? <Component {...this.props} data={data} /> : null
-                    }
-                </React.Fragment>
+                loading ?
+                    <Loader active size='small' inline='centered' />
+                    :
+                    authUser ? <Component {...this.props} data={data} /> : null
             )
         }
     }
-    return withAuthorization(auth => true)(WithData)
+    return withFirebase(WithData)
 }
 
 export default DataContext
