@@ -3,7 +3,6 @@ import * as ROUTES from './constants/route'
 import { Button, Form, Segment, Grid, Loader } from 'semantic-ui-react'
 import { withAuthorization } from './components/auth'
 
-
 const INIT_STATE = {
     email: '',
     password: '',
@@ -18,7 +17,6 @@ class Login extends PureComponent {
         if (user)
             this.props.history.push(ROUTES.LANDING)
     }
-
 
     onChange = event => {
         this.setState({
@@ -44,7 +42,6 @@ class Login extends PureComponent {
     render() {
         const { email, password, error } = this.state
         const { authUser } = this.props.auth
-        
 
         return (
             authUser ?
@@ -53,13 +50,14 @@ class Login extends PureComponent {
                 </React.Fragment>
                 :
                 <div>
-                    <style>{`
-                                body > #root,
-                                body > #root > div ,
-                                body > div > div > div {
-                                height: 100%;
-                                }
-                            `}
+                    <style>
+                        {`
+                            body > #root,
+                            body > #root > div ,
+                            body > div > div > div {
+                            height: 100%;
+                            }
+                        `}
                     </style>
                     <Grid textAlign="center" verticalAlign="middle" style={{ height: '100%' }}>
                         <Grid.Column style={{ maxWidth: 450 }}>

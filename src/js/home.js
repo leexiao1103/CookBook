@@ -3,40 +3,26 @@ import ToolCenter from './toolcenter'
 import CardGroup from './cardgroup'
 import AddBoard from './addboard'
 import { withAuthorization } from './components/auth'
-import { ToggleContext } from './components/toggle'
+import { ToggleContext, toggleAddBoard, toggleDelete } from './components/toggle'
 
 class Home extends PureComponent {
     state = {
-        cardData: {},
         isAddBoardOpen: false,
         isDeleteOpen: false,
     }
 
-    componentDidMount() {
-        //this.props.history.length = 0
-
-    }
-
-    toggleAddBoard = () => {
-        const { isAddBoardOpen } = this.state
-        this.setState(() => ({
-            isAddBoardOpen: !isAddBoardOpen
-        }))
-    }
-
-    toggleDelete = () => {
-        const { isDeleteOpen } = this.state
-        this.setState({
-            isDeleteOpen: !isDeleteOpen
-        })
-    }
-
     render() {
-        const { cardData, isAddBoardOpen, isDeleteOpen } = this.state
         console.log('render home')
-        console.log(this.props)
+        const { isAddBoardOpen } = this.state
         return (
-            <ToggleContext.Provider value={{ toggleAddBoard: this.toggleAddBoard, toggleDelete: this.toggleDelete }}>
+            <ToggleContext.Provider
+                value={
+                    {
+                        toggleAddBoard: () => this.setState(toggleAddBoard),
+                        toggleDelete: () => this.setState(toggleDelete)
+                    }
+                }
+            >
                 <CardGroup />
                 <ToolCenter
                     toggleAddBoard={this.toggleAddBoard}
@@ -45,7 +31,7 @@ class Home extends PureComponent {
                 <AddBoard
                     visible={isAddBoardOpen}
                     toggleAddBoard={this.toggleAddBoard} />
-            </ ToggleContext.Provider>
+            </ToggleContext.Provider>
         )
     }
 }

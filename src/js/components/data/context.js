@@ -15,12 +15,12 @@ const withData = dataRoute => Component => {
 
         componentDidMount() {
             const { firebase } = this.props
-            this.props.firebase.auth.onAuthStateChanged(authUser => {
+            this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
                 if (authUser) {
-                    this.setState({ loading: false, authUser })
-                    firebase.user(`${authUser.uid}/${dataRoute}`).on('value', snapshot => this.setState({ data: snapshot.val() || {} }))
+                    this.setState(() => ({ loading: false, authUser }))
+                    firebase.user(`${authUser.uid}/${dataRoute}`).on('value', snapshot => this.setState(() => ({ data: snapshot.val() || {} })))
                 } else {
-                    this.setState({ loading: false, authUser: null, data: {} })
+                    this.setState(() => ({ loading: false, authUser: null, data: {} }))
                 }
             })
         }
@@ -29,6 +29,7 @@ const withData = dataRoute => Component => {
             console.log('data unmount')
             const { firebase } = this.props
             const { authUser } = this.state
+            this.listener()
             if (authUser)
                 firebase.user(`${authUser.uid}/${dataRoute}`).off()
         }
