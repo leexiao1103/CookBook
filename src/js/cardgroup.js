@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
 import FBase from './components/firebase'
-import { Card, Segment, Button } from 'semantic-ui-react'
+import { Card } from 'semantic-ui-react'
 import CardItem from './carditem'
 import CardDetail from './carddetail'
-import CheckDelete from './checkdelete'
 import { withData } from './components/data'
 import { withToggle } from './components/toggle'
 
@@ -65,10 +64,6 @@ class CardGroup2 extends PureComponent {
 				<Card.Group centered>
 					{cards}
 				</Card.Group>
-				<CheckDelete
-					deleteData={() => this.deleteData(deleteTarget)}
-					isDeleteOpen={isDeleteOpen}
-					toggleDelete={toggleDelete} />
 				<CardDetail
 					data={data[selectCard] || {}}
 					visible={isCardDetailOpen}
@@ -81,34 +76,43 @@ class CardGroup2 extends PureComponent {
 
 
 class CardGroup extends PureComponent {
-	render() {
-		console.log(this.props)
-		const InsertCard = () => (
-			<Card onClick={this.props.toggleAddBoard}>
-				<Card.Content>
-					<Segment basic textAlign='center'>
-						<Button circular icon='facebook' size='massive'></Button>
-					</Segment>
+	state = {
+		isCardDetailOpen: false,
+		selectID: '',
+	}
 
-				</Card.Content>
-			</Card>
-		)
+	toggleCardDetail = (cardID = '') => this.setState(state => ({
+		isCardDetailOpen: !state.isCardDetailOpen,
+		selectID: cardID
+	}))
+
+
+
+
+
+	render() {
+		const { isCardDetailOpen, selectID } = this.state
 		const { data } = this.props
 		const cards = Object.keys(data).map(key =>
 			<CardItem
 				key={key}
 				id={key}
-				value={data[key]}
-				isDeleteOpen={false}
+				data={data[key]}
+				toggleCardDetail={this.toggleCardDetail}
 			/>
 		)
 
 		return (
 			<React.Fragment>
 				<Card.Group centered>
-					<InsertCard />
 					{cards}
 				</Card.Group>
+				{isCardDetailOpen ?
+					<CardDetail
+						data={data[selectID] || {}}
+						toggleCardDetail={this.toggleCardDetail} />
+					: null
+				}
 			</React.Fragment>
 		)
 	}

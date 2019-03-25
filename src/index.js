@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './js/app'
 import './css/main.css'
+import 'semantic-ui-css/semantic.min.css'
 import Firebase, { FirebaseContext } from './js/components/firebase'
 
 ReactDOM.render(

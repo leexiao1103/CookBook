@@ -1,5 +1,4 @@
 import React from 'react'
-import { withAuthorization } from '../auth'
 import { Loader } from 'semantic-ui-react'
 import { withFirebase } from '../firebase';
 
@@ -17,8 +16,10 @@ const withData = dataRoute => Component => {
             const { firebase } = this.props
             this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
                 if (authUser) {
-                    this.setState(() => ({ loading: false, authUser }))
-                    firebase.user(`${authUser.uid}/${dataRoute}`).on('value', snapshot => this.setState(() => ({ data: snapshot.val() || {} })))
+                    firebase.user(`${authUser.uid}/${dataRoute}`).on('value', snapshot =>
+                        this.setState(() => ({
+                            loading: false, data: snapshot.val() || {}, authUser
+                        })))
                 } else {
                     this.setState(() => ({ loading: false, authUser: null, data: {} }))
                 }

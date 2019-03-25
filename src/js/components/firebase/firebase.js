@@ -48,15 +48,13 @@ export default class Firebase {
     getCurrentUser = () => this.auth.currentUser
 
     // *** User API ***
-    setUser = (uid, username) => {
-        this.user = { uid, username }
-    }
-
     user = uid => this.db.ref(`users/${uid}`)
 
     users = () => this.db.ref('users')
 
     pushToDB = (url, data) => this.db.ref(url).push(data)
+
+    removeData = url => this.db.ref(url).remove()
 
     getDefaultImg = () => {
         this.storage.ref().child('image.png').getDownloadURL()

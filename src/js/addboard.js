@@ -1,35 +1,28 @@
-import React, { PureComponent } from 'react'
-import { Button, Icon, Modal, Form, Header, Label, Item, Transition } from 'semantic-ui-react'
-import FBase from './components/firebase'
+import React, { Component } from 'react'
+import { Button, Icon, Modal, Form, Header, Label, Item, Transition, Segment, Image } from 'semantic-ui-react'
+import { withFirebase } from './components/firebase'
+import { withToggle } from './components/toggle'
+import CheckClose from './checkclose'
 
-export default class AddBoard extends PureComponent {
-    state = {
-        img: 'https://firebasestorage.googleapis.com/v0/b/cookbooktest-4fea9.appspot.com/o/image.png?alt=media&token=072ea1a7-b049-4842-a0b4-3d2b0bb3c57f',
-        name: '',
-        spec: '',
-        materials: [],
-        steps: [],
-    }
+const INIT_STATE = {
+    img: '',
+    name: '',
+    spec: '',
+    materials: [],
+    steps: [],
+}
 
-    initState = () => {
-        this.setState({
-            img: 'https://firebasestorage.googleapis.com/v0/b/cookbooktest-4fea9.appspot.com/o/image.png?alt=media&token=072ea1a7-b049-4842-a0b4-3d2b0bb3c57f',
-            name: '',
-            spec: '',
-            materials: [],
-            steps: [],
-        })
+class AddBoard extends Component {
+    state = INIT_STATE
+
+    componentWillUnmount() {
+        this.setState(() => ({ ...INIT_STATE }))
     }
 
     addMaterial = () => {
         const material = document.getElementById('foodform').material
-        const { materials } = this.state
-
         if (material.value) {
-            this.setState({
-                materials: [...materials, material.value]
-            })
-            material.value = ''
+            this.setState(state => ({ materials: [...state.materials, material.value] }), () => material.value = '')
         }
     }
 
@@ -46,33 +39,44 @@ export default class AddBoard extends PureComponent {
 
     addSteps = () => {
         const step = document.getElementById('foodform').step
-        const { steps } = this.state
 
         if (step.value) {
-            this.setState({
-                steps: [...steps, step.value],
-            })
-            step.value = ''
+            this.setState(state => ({ steps: [...state.steps, step.value] }), () => step.value = '')
         }
     }
 
-    removeSteps = () => {
-        let { steps } = this.state
-        steps.pop()
+    removeSteps = () => this.setState(state => {
+        state.steps.pop()
+        return { steps: state.steps }
+    })
+
+
+    handleChange = event => {
         this.setState({
-            steps: steps
+            [event.target.name]: event.target.value
         })
     }
 
-    handleChange = (e, { name, value }) => {
-        this.setState({
-            [name]: value
-        })
+    uploadImg = event => {
+        const { files } = event.target
+        if (files && files[0]) {
+            const reader = new FileReader()
+            reader.onload = e => this.setState(() => ({ img: e.target.result }))
+            reader.readAsDataURL(files[0])
+        }
+    }
+
+    clearImg = () => {
+        const fileInput = document.getElementById('upload_img')
+        fileInput.type = ''
+        fileInput.type = 'file'
+        this.setState(() => ({ img: '' }))
     }
 
     goSubmit = () => {
         const { img, name, spec, materials, steps } = this.state
-        const { toggleAddBoard } = this.props
+        const { toggleAddBoard, firebase } = this.props
+        const uid = firebase.getCurrentUser().uid
         const data = {
             Date: new Date().toLocaleDateString(),
             Img: img,
@@ -81,156 +85,125 @@ export default class AddBoard extends PureComponent {
             Materials: materials,
             Steps: steps,
         }
-        FBase.pushToDB('mom/food/', data)
-        this.initState()
+        console.log(uid)
+        firebase.pushToDB(`users/${uid}/food`, data)
         toggleAddBoard()
     }
 
     render() {
-        const { toggleAddBoard, visible } = this.props
+        const { toggleAddBoard } = this.props
+        const { img, name, spec, materials, steps } = this.state
+        const isInvalid =
+            img === '' ||
+            name === '' ||
+            spec === '' ||
+            materials.length === 0 || steps.length === 0
 
         return (
-            <Modal open={visible}>
-                <Modal.Header>New</Modal.Header>
-                <Modal.Content scrolling>
-                    <Form id='foodform' size='big'>
-                        <Form.Input
-                            label='照片'
-                            type="file"
-                            accept="image/jpeg, image/png"
-                        />
-                        <Form.Group widths='equal'>
-                            <Form.Input
-                                name='name'
-                                label='名字'
-                                placeholder='取個名字吧'
-                                onChange={this.handleChange}
+            <Transition animation={'fly left'} duration={800} transitionOnMount={true}>
+                <Modal open={true}>
+                    <Modal.Header>新想法</Modal.Header>
+                    <Modal.Content scrolling>
+                        <Form id='foodform' size='big'>
+                            <input
+                                id='upload_img'
+                                type='file'
+                                accept='image/jpeg,image/png'
+                                onChange={this.uploadImg}
+                                style={{ display: 'none' }}
                             />
-                            <Form.Input
-                                name='spec'
-                                label='類別'
-                                placeholder='是甚麼料理呢'
-                                onChange={this.handleChange}
-                            />
-                        </Form.Group>
-                        <Form.Input
-                            label='材料'
-                            name='material'
-                            placeholder='需要什麼呢'
-                            icon={<Icon link color={'pink'} name={'plus'} onClick={this.addMaterial}></Icon>}
-                        />
-                        <Form.Field>
-                            {
-                                this.state.materials.map((val, idx) => {
-                                    return (
-                                        <Label key={idx} color='brown' size='large'>
-                                            {val}
-                                            <Icon name='delete' data-val={val} onClick={this.removeMaterial} />
-                                        </Label>
-                                    )
-                                })
+                            {img ?
+                                <Segment basic textAlign='center' >
+                                    <Image
+                                        bordered
+                                        rounded
+                                        centered
+                                        size='large'
+                                        src={img}
+                                    />
+                                    <Button.Group size='medium'>
+                                        <Button compact icon='x' onClick={this.clearImg} />
+                                        <Button compact icon='redo alternate' as='label' htmlFor='upload_img' />
+                                    </Button.Group>
+                                </Segment>
+                                :
+                                <Segment secondary textAlign='center' padded='very'>
+                                    <Header icon='upload' size='huge' />
+                                    <Button as='label' color='green' size='medium' htmlFor='upload_img' content='上傳圖片' />
+                                </Segment>
                             }
-                        </Form.Field>
-                        <Form.Input
-                            label='做法'
-                            name='step'
-                            placeholder='該怎麼做呢'
-                            icon={<Icon link color={'green'} name={'arrow right'} onClick={this.addSteps}></Icon>}
-                        />
-                        <Item.Group divided>
-                            {
-                                this.state.steps.map((val, idx) => {
-                                    return (
+                            <Form.Group widths='equal'>
+                                <Form.Input
+                                    name='name'
+                                    label='名字'
+                                    placeholder='取個名字吧'
+                                    onChange={this.handleChange}
+                                />
+                                <Form.Input
+                                    name='spec'
+                                    label='類別'
+                                    placeholder='是甚麼料理呢'
+                                    onChange={this.handleChange}
+                                />
+                            </Form.Group>
+                            <Form.Input
+                                label='材料'
+                                name='material'
+                                placeholder='需要什麼呢'
+                                icon={<Icon link color={'pink'} name={'plus'} onClick={this.addMaterial}></Icon>}
+                            />
+                            <Form.Field>
+                                {
+                                    materials.map((val, idx) =>
+                                        (
+                                            <Label key={idx} color='brown' size='large'>
+                                                {val}
+                                                <Icon name='delete' data-val={val} onClick={this.removeMaterial} />
+                                            </Label>
+                                        ))
+                                }
+                            </Form.Field>
+                            <Form.Input
+                                label='做法'
+                                name='step'
+                                placeholder='該怎麼做呢'
+                                icon={<Icon link color={'green'} name={'arrow right'} onClick={this.addSteps}></Icon>}
+                            />
+                            <Item.Group divided>
+                                {
+                                    steps.map((val, idx) => (
                                         <Item key={idx}>
                                             <Item.Content>
                                                 <Item.Header>{parseInt(idx) + 1}</Item.Header>
                                                 <Item.Description>{val}</Item.Description>
                                             </Item.Content>
                                         </Item>
-                                    )
-                                })
+                                    ))
+                                }
+                            </Item.Group>
+                            {steps.length !== 0 ?
+                                <Button attached='bottom' onClick={this.removeSteps}>
+                                    <Icon name='close' size='large'></Icon>
+                                </Button>
+                                : null
                             }
-                        </Item.Group>
-                        <Transition visible={this.state.steps.length !== 0 ? true : false} animation='slide down' duration={500}>
-                            <Button attached='bottom' onClick={this.removeSteps}>
-                                <Icon name='close' size='large'></Icon>
-                            </Button>
-                        </Transition>
-                    </Form>
-                </Modal.Content>
-                <Modal.Actions>
-                    <CheckClose
-                        toggleAddBoard={toggleAddBoard}
-                        initState={this.initState} />
-                    <Button
-                        inverted
-                        color='blue'
-                        content='Save'
-                        onClick={this.goSubmit}
-                    />
-                </Modal.Actions>
-            </Modal >
+                        </Form>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <CheckClose toggleFunc={toggleAddBoard} />
+                        <Button
+                            disabled={isInvalid ? true : false}
+                            inverted
+                            color='blue'
+                            content='Save'
+                            onClick={this.goSubmit}
+                        />
+                    </Modal.Actions>
+                </Modal >
+            </Transition>
         )
     }
 }
 
-class CheckClose extends PureComponent {
-    state = {
-        visible: false
-    }
+export default withFirebase((withToggle(AddBoard)))
 
-    ToggleOpen = () => {
-        if (this.state.visible) {
-            this.setState({ visible: false })
-        } else {
-            this.setState({ visible: true })
-        }
-    }
-
-    close = () => {
-        const { toggleAddBoard, initState } = this.props
-        toggleAddBoard()
-        initState()
-    }
-
-    render() {
-        return (
-            <Modal
-                basic
-                onOpen={this.ToggleOpen}
-                onClose={this.ToggleOpen}
-                open={this.state.visible}
-                size='small'
-                trigger={
-                    <Button
-                        inverted
-                        color='red'
-                        content='Cancel'
-                    />
-                }
-            >
-                <Header icon={<Icon name='exclamation' color='yellow'></Icon>} content='確定取消嗎?' />
-                <Modal.Actions>
-                    <Button
-                        basic
-                        inverted
-                        icon='remove'
-                        color='red'
-                        content='No'
-                        onClick={this.ToggleOpen}
-                    >
-                    </Button>
-                    <Button
-                        basic
-                        inverted
-                        icon='checkmark'
-                        color='blue'
-                        content='Yes'
-                        onClick={this.close}
-                    >
-                    </Button>
-                </Modal.Actions>
-            </Modal>
-        )
-    }
-}
