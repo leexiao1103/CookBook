@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Icon, Modal, Form, Header, Label, Item, Transition, Segment, Image } from 'semantic-ui-react'
-import { withFirebase } from './components/firebase'
-import { withToggle } from './components/toggle'
-import CheckClose from './checkclose'
+import { withFirebase } from '../../firebase'
+import { withCardGroup } from '../'
+import CheckClose from '../../../checkclose'
 
 const INIT_STATE = {
     img: '',
@@ -14,6 +14,19 @@ const INIT_STATE = {
 
 class AddBoard extends Component {
     state = INIT_STATE
+
+    componentDidMount() {
+        const { selectCard } = this.props
+        if (selectCard) {
+            this.setState({
+                img: selectCard.Img,
+                name: selectCard.Name,
+                spec: selectCard.Spec,
+                materials: selectCard.Materials,
+                steps: selectCard.Steps,
+            })
+        }
+    }
 
     componentWillUnmount() {
         this.setState(() => ({ ...INIT_STATE }))
@@ -85,13 +98,12 @@ class AddBoard extends Component {
             Materials: materials,
             Steps: steps,
         }
-        console.log(uid)
-        firebase.pushToDB(`users/${uid}/food`, data)
+        firebase.pushData(`users/${uid}/food`, data)
         toggleAddBoard()
     }
 
     render() {
-        const { toggleAddBoard } = this.props
+        const { toggleAddBoard, selectCard } = this.props
         const { img, name, spec, materials, steps } = this.state
         const isInvalid =
             img === '' ||
@@ -100,7 +112,7 @@ class AddBoard extends Component {
             materials.length === 0 || steps.length === 0
 
         return (
-            <Transition animation={'fly left'} duration={800} transitionOnMount={true}>
+            <Transition animation={'fly left'} duration={800} >
                 <Modal open={true}>
                     <Modal.Header>新想法</Modal.Header>
                     <Modal.Content scrolling>
@@ -205,5 +217,5 @@ class AddBoard extends Component {
     }
 }
 
-export default withFirebase((withToggle(AddBoard)))
+export default withFirebase((withCardGroup(AddBoard)))
 

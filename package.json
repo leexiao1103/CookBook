@@ -5,6 +5,7 @@
   "homepage": "https://leexiao1103.github.io/CookBook/",
   "dependencies": {
     "firebase": "^5.9.1",
+    "npm": "^6.9.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-router-dom": "^4.3.1",
@@ -30,6 +31,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "gh-pages": "^2.0.1"
+    "gh-pages": "^2.0.1",
+    "node-sass": "^4.11.0"
   }
 }

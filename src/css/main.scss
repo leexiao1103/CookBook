@@ -1,0 +1,50 @@
+body,
+.ui,
+.content,
+.item {
+  font-family: "Fira Mono", "Noto Sans TC";
+}
+
+.ui.label {
+  margin: 0.14285714em;
+}
+
+#root {
+  width: 100%;
+  padding: 50px 50px;
+}
+
+#check_delete {
+  z-index: 999;
+}
+
+#tool_center {
+  z-index: 998;
+}
+
+#menu_btns {
+  position: fixed;
+  display: inline-block;
+  bottom: 25px;
+  right: 25px;
+  button {
+    margin: 10px 0px 0px 0px;
+    transition: bottom 0.6s 0.25s;
+    box-shadow: 0 14px 59px -7px rgba(0, 0, 0, 0.55);
+  }
+}
+
+#check_delete_btns {
+  position: absolute;
+  display: flex;
+  left: 0;
+  right: 0;
+  bottom: 25px;
+  justify-content: center;
+  align-items: center;
+  button {
+    margin: 0px 10px 0px 10px;
+    transition: bottom 0.6s 0.25s;
+    box-shadow: 0 14px 59px -7px rgba(0, 0, 0, 0.55);
+  }
+}

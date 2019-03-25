@@ -9,7 +9,7 @@ const withData = dataRoute => Component => {
         state = {
             loading: true,
             authUser: null,
-            data: {}
+            data: null
         }
 
         componentDidMount() {
@@ -18,10 +18,10 @@ const withData = dataRoute => Component => {
                 if (authUser) {
                     firebase.user(`${authUser.uid}/${dataRoute}`).on('value', snapshot =>
                         this.setState(() => ({
-                            loading: false, data: snapshot.val() || {}, authUser
+                            loading: false, data: snapshot.val() || null, authUser
                         })))
                 } else {
-                    this.setState(() => ({ loading: false, authUser: null, data: {} }))
+                    this.setState(() => ({ loading: false, authUser: null, data: null }))
                 }
             })
         }

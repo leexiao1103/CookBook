@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Icon, Modal, Header } from 'semantic-ui-react'
-import { withToggle } from './components/toggle'
+import { withCardGroup } from './components/cardgroup'
 
 class CheckClose extends Component {
     state = {
@@ -52,4 +52,4 @@ class CheckClose extends Component {
     }
 }
 
-export default withToggle(CheckClose)
+export default withCardGroup(CheckClose)

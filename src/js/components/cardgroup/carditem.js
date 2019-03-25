@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Dimmer, Card, Image, Label, Icon, Transition } from 'semantic-ui-react'
-import { withToggle } from './components/toggle';
+import { withCardGroup } from '/';
 
 class CardItem extends Component {
   state = {
@@ -41,4 +41,4 @@ class CardItem extends Component {
   }
 }
 
-export default withToggle(CardItem)
+export default withCardGroup(CardItem)

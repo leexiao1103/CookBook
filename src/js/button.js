@@ -1,5 +1,5 @@
 import React from 'react'
-import { withToggle } from './components/toggle'
+import { withCardGroup } from './components/cardgroup'
 import { Button, Icon, Transition } from 'semantic-ui-react'
 
 const addBoardButton = props => (
@@ -21,20 +21,20 @@ const deleteButton = props => (
 const checkDeleteButton = props => (
     <React.Fragment>
         <Transition animation={'fade left'} duration={800} transitionOnMount={true}>
-            <Button icon circular size="huge" color="red" onClick={props.deleteData}>
+            <Button icon circular size="huge" color="blue" onClick={props.deleteData}>
                 <Icon name="check" size="large"></Icon>
             </Button>
         </Transition>
         <Transition animation={'fade left'} duration={800} transitionOnMount={true}>
-            <Button icon circular size="huge" color="blue" onClick={props.toggleDelete}>
+            <Button icon circular size="huge" color="red" onClick={props.toggleDelete}>
                 <Icon name="arrow right" size="large"></Icon>
             </Button>
         </Transition>
     </React.Fragment>
 )
 
-const AddBoardButton = withToggle(addBoardButton)
-const DeleteButton = withToggle(deleteButton)
-const CheckDeleteButton = withToggle(checkDeleteButton)
+const AddBoardButton = withCardGroup(addBoardButton)
+const DeleteButton = withCardGroup(deleteButton)
+const CheckDeleteButton = withCardGroup(checkDeleteButton)
 
 export { AddBoardButton, DeleteButton, CheckDeleteButton }

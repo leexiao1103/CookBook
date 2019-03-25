@@ -52,7 +52,9 @@ export default class Firebase {
 
     users = () => this.db.ref('users')
 
-    pushToDB = (url, data) => this.db.ref(url).push(data)
+    pushData = (url, data) => this.db.ref(url).push(data)
+
+    updateData = (url, data) => this.db.ref(url).update(data)
 
     removeData = url => this.db.ref(url).remove()
 
