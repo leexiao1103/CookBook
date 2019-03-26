@@ -13,18 +13,22 @@ const INIT_STATE = {
 }
 
 class AddBoard extends Component {
-    state = INIT_STATE
-
-    componentDidMount() {
-        const { selectCard } = this.props
-        if (selectCard) {
-            this.setState({
-                img: selectCard.Img,
-                name: selectCard.Name,
-                spec: selectCard.Spec,
-                materials: selectCard.Materials,
-                steps: selectCard.Steps,
-            })
+    constructor(props) {
+        super(props)
+        this.isEdit = false
+        if (this.props.selectCard.card && this.props.selectCard.id) {
+            const { id, card } = this.props.selectCard
+            this.isEdit = true
+            this.selectID = id
+            this.state = {
+                img: card.Img,
+                name: card.Name,
+                spec: card.Spec,
+                materials: card.Materials,
+                steps: card.Steps
+            }
+        } else {
+            this.state = INIT_STATE
         }
     }
 
@@ -88,7 +92,7 @@ class AddBoard extends Component {
 
     goSubmit = () => {
         const { img, name, spec, materials, steps } = this.state
-        const { toggleAddBoard, firebase } = this.props
+        const { toggleAddBoard, firebase, selectCard } = this.props
         const uid = firebase.getCurrentUser().uid
         const data = {
             Date: new Date().toLocaleDateString(),
@@ -98,12 +102,12 @@ class AddBoard extends Component {
             Materials: materials,
             Steps: steps,
         }
-        firebase.pushData(`users/${uid}/food`, data)
+        this.isEdit ? firebase.updateData(`users/${uid}/food/${selectCard.id}`, data) : firebase.pushData(`users/${uid}/food`, data)
         toggleAddBoard()
     }
 
     render() {
-        const { toggleAddBoard, selectCard } = this.props
+        const { toggleAddBoard } = this.props
         const { img, name, spec, materials, steps } = this.state
         const isInvalid =
             img === '' ||
@@ -112,9 +116,9 @@ class AddBoard extends Component {
             materials.length === 0 || steps.length === 0
 
         return (
-            <Transition animation={'fly left'} duration={800} >
+            <Transition animation={'fly left'} duration={800} transitionOnMount={true}>
                 <Modal open={true}>
-                    <Modal.Header>新想法</Modal.Header>
+                    <Modal.Header>{this.isEdit ? `修改` : `新想法`}</Modal.Header>
                     <Modal.Content scrolling>
                         <Form id='foodform' size='big'>
                             <input
@@ -140,7 +144,7 @@ class AddBoard extends Component {
                                 </Segment>
                                 :
                                 <Segment secondary textAlign='center' padded='very'>
-                                    <Header icon='upload' size='huge' />
+                                    <Header icon='upload' size='large' />
                                     <Button as='label' color='green' size='medium' htmlFor='upload_img' content='上傳圖片' />
                                 </Segment>
                             }
@@ -149,12 +153,14 @@ class AddBoard extends Component {
                                     name='name'
                                     label='名字'
                                     placeholder='取個名字吧'
+                                    value={name}
                                     onChange={this.handleChange}
                                 />
                                 <Form.Input
                                     name='spec'
                                     label='類別'
                                     placeholder='是甚麼料理呢'
+                                    value={spec}
                                     onChange={this.handleChange}
                                 />
                             </Form.Group>
