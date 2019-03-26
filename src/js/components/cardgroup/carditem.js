@@ -33,7 +33,7 @@ class CardItem extends Component {
             </Card.Description>
           </Card.Content>
           <Dimmer active={isDeleteOpen} >
-            <Icon name='check circle outline' color={isSelected ? 'green' : 'grey'} size='massive' />
+            <Icon name='crosshairs' color={isSelected ? 'green' : 'grey'} size='massive' />
           </Dimmer>
         </Dimmer.Dimmable>
       </Transition>

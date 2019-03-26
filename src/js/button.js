@@ -22,12 +22,13 @@ const checkDeleteButton = props => (
     <React.Fragment>
         <Transition animation={'fade up'} duration={800} transitionOnMount={true}>
             <Button icon circular size="huge" color="red" onClick={props.toggleDelete}>
-                <Icon name="arrow right" size="large"></Icon>
+                <Icon name="undo" size="large"></Icon>
             </Button>
         </Transition>
+        <span className='straight_line'></span>
         <Transition animation={'fade up'} duration={800} transitionOnMount={true}>
             <Button icon circular size="huge" color="blue" onClick={props.deleteData}>
-                <Icon name="check" size="large"></Icon>
+                <Icon name="trash alternate outline" size="large"></Icon>
             </Button>
         </Transition>
     </React.Fragment>
