@@ -116,7 +116,7 @@ class AddBoard extends Component {
             materials.length === 0 || steps.length === 0
 
         return (
-            <Transition animation={'fly left'} duration={800} transitionOnMount={true}>
+            <Transition animation={'fade left'} duration={500} transitionOnMount={true}>
                 <Modal open={true}>
                     <Modal.Header>{this.isEdit ? `修改` : `新想法`}</Modal.Header>
                     <Modal.Content scrolling>

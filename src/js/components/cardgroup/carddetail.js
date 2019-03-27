@@ -10,16 +10,16 @@ const CardDetail = props => {
     const panes = [
         { menuItem: '材料', render: () => <Tab.Pane><MaterialItem materials={selectCard.card.Materials} /></Tab.Pane> },
         { menuItem: '做法', render: () => <Tab.Pane><StepItem steps={selectCard.card.Steps} /></Tab.Pane> },
-        { menuItem: 'Tab 3', render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> }
+        // { menuItem: 'Tab 3', render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> }
     ]
 
     return (
-        <Transition animation={'fly down'} duration={800} transitionOnMount={true}>
+        <Transition animation={'fade left'} duration={500} transitionOnMount={true}>
             <Modal open={true} closeIcon={closeicon}>
                 <Modal.Header>{selectCard.card.Name || ''}</Modal.Header>
                 <Modal.Content scrolling>
                     <Image src={selectCard.card.Img || ''} size='large' centered rounded />
-                    <Tab menu={{ secondary: true, pointing: true, fluid: true, widths: 3 }} panes={panes} />
+                    <Tab menu={{ secondary: true, pointing: true, fluid: true, widths: 2 }} panes={panes} />
                 </Modal.Content>
                 <Modal.Actions>
                     <Button

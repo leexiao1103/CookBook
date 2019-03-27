@@ -21,7 +21,7 @@ const devconfig = {
     storageBucket: "cookbooktest-4fea9.appspot.com",
     messagingSenderId: "1003067516877"
 }
-const config = devconfig//process.env.NODE_ENV === 'production' ? proconfig : devconfig
+const config = process.env.NODE_ENV === 'production' ? proconfig : devconfig
 
 export default class Firebase {
     constructor() {
