@@ -1,7 +1,8 @@
 body,
 .ui,
 .content,
-.item {
+.item,
+.header {
   font-family: "Fira Mono", "Noto Sans TC";
 }
 
@@ -24,6 +25,7 @@ body,
 
 #menu_btns {
   position: fixed;
+  z-index: 999;
   display: inline-block;
   bottom: 25px;
   right: 25px;
@@ -36,16 +38,17 @@ body,
 
 #check_delete_btns {
   position: fixed;
-  display: flex;
+  display: flex!important;
   margin: 0 auto;
   padding: 15px;
-  z-index: 9999;
+  z-index: 999;
+  background-color: aliceblue;
   left: 0;
   right: 0;
   bottom: 0;
   justify-content: space-between;
   align-items: center;
-  width: 300px;
+  width: 310px;
   border-top: 1px solid #ccc;
   border-right: 1px solid #ccc;
   border-left: 1px solid #ccc;
@@ -59,6 +62,6 @@ body,
 
 .straight_line {
   height: 50px;
-  border-left: 1px solid #ccc;
+  border-left: 2px solid #ccc;
   padding: 1px;
 }

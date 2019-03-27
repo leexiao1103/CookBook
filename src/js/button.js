@@ -19,19 +19,17 @@ const deleteButton = props => (
 )
 
 const checkDeleteButton = props => (
-    <React.Fragment>
-        <Transition animation={'fade up'} duration={800} transitionOnMount={true}>
+    <Transition animation={'swing up'} duration={800} transitionOnMount={true}>
+        <div id='check_delete_btns'>
             <Button icon circular size="huge" color="red" onClick={props.toggleDelete}>
                 <Icon name="undo" size="large"></Icon>
             </Button>
-        </Transition>
-        <span className='straight_line'></span>
-        <Transition animation={'fade up'} duration={800} transitionOnMount={true}>
+            <span className='straight_line'></span>
             <Button icon circular size="huge" color="blue" onClick={props.deleteData}>
                 <Icon name="trash alternate outline" size="large"></Icon>
             </Button>
-        </Transition>
-    </React.Fragment>
+        </div>
+    </Transition>
 )
 
 const AddBoardButton = withCardGroup(addBoardButton)

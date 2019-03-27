@@ -81,9 +81,7 @@ class CardGroup extends PureComponent {
 						<AddBoardButton />
 					</div>
 					:
-					<div id='check_delete_btns'>
-						<CheckDeleteButton />
-					</div>
+					<CheckDeleteButton />
 				}
 				{isAddBoardOpen ?
 					<AddBoard />
