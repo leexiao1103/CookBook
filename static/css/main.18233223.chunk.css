@@ -1,2 +1,0 @@
-@import url(https://fonts.googleapis.com/css?family=Fira+Mono);@import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);.content,.item,.ui,body{font-family:Fira Mono,Noto Sans TC}.ui.label{margin:.14285714em}#root{padding:50px}#check_delete,#tool_center{position:fixed;display:inline-block;bottom:25px;right:25px}#check_delete{z-index:999}#tool_center{z-index:998}#check_delete button,#tool_center button{margin:10px 0 0;transition:bottom .6s .25s;box-shadow:0 14px 59px -7px rgba(0,0,0,.55)}
-/*# sourceMappingURL=main.18233223.chunk.css.map */
