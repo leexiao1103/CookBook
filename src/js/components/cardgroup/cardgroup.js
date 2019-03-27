@@ -61,7 +61,7 @@ class CardGroup extends PureComponent {
 			<CardGroupContext.Provider
 				value={{
 					cards: data,
-					selectCard: { id: selectID, card: data[selectID] },
+					selectCard: data ? { id: selectID, card: data[selectID] } : {},
 					isDeleteOpen,
 					toggleAddBoard: () => this.setState(toggleAddBoard),
 					toggleDelete: () => this.setState(toggleDelete),
