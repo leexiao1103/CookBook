@@ -4,6 +4,7 @@ import { Button, Form, Segment, Grid } from 'semantic-ui-react'
 import { withAuthorization } from './components/auth'
 
 const INIT_STATE = {
+    loading: false,
     username: '',
     email: '',
     passwordOne: '',
@@ -24,6 +25,8 @@ class Signup extends PureComponent {
         event.preventDefault()
         let { firebase } = this.props
         const { username, email, passwordOne } = this.state
+
+        this.setState(state => ({ loading: !state.loading }))
         firebase.doCreateUserWithEmailAndPassword(email, passwordOne)
             .then(authUser => {
                 return firebase.user(authUser.user.uid).set({ username, email })
@@ -38,7 +41,7 @@ class Signup extends PureComponent {
     }
 
     render() {
-        let { username, email, passwordOne, passwordTwo, error } = this.state
+        let { loading, username, email, passwordOne, passwordTwo, error } = this.state
         const isInvalid =
             passwordOne !== passwordTwo ||
             passwordOne === '' ||
@@ -104,6 +107,7 @@ class Signup extends PureComponent {
                                     color='teal'
                                     type='submit'
                                     disabled={isInvalid}
+                                    loading={loading ? true : false}
                                 >
                                     Signup
                                 </Button>

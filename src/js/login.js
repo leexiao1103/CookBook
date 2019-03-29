@@ -4,6 +4,7 @@ import { Button, Form, Segment, Grid, Loader } from 'semantic-ui-react'
 import { withAuthorization } from './components/auth'
 
 const INIT_STATE = {
+    loading: false,
     email: '',
     password: '',
     error: null
@@ -29,6 +30,7 @@ class Login extends PureComponent {
         const { email, password } = this.state
         const { firebase } = this.props
 
+        this.setState(state => ({ loading: !state.loading }))
         firebase.doSignInWithEmailAndPassword(email, password)
             .then(authUser => {
                 this.setState({ ...INIT_STATE })
@@ -40,7 +42,7 @@ class Login extends PureComponent {
     }
 
     render() {
-        const { email, password, error } = this.state
+        const { loading, email, password, error } = this.state
         const { authUser } = this.props.auth
 
         return (
@@ -88,6 +90,7 @@ class Login extends PureComponent {
                                         size='large'
                                         color='teal'
                                         type='submit'
+                                        loading={loading ? true : false}
                                     >
                                         Login
                                 </Button>
